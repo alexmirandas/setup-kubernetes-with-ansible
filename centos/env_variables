@@ -1,0 +1,27 @@
+# Master node ip address
+ad_addr: 192.168.122.10
+
+# cidr range for the pods.
+cidr_v: 172.16.0.0/16
+
+# Packages to configure kubernetes cluster
+utils:
+- yum-utils
+- device-mapper-persistent-data
+- lvm2
+
+packages:
+- docker
+- kubeadm
+- kubectl
+
+services:
+- docker
+- kubelet
+- firewalld
+
+ports:
+- 6443/tcp
+- 10250/tcp
+
+token_file: join_token

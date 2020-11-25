@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: true
+  gather_facts: No
+  tasks:
+
+#   - name: Update the /etc/hosts file with node name
+#    tags: etchostsupdate
+#     become: yes
+#     become_user: root
+#     lineinfile:
+#       path: "/etc/hosts"
+#       regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+#       line: "{{ hostvars[item]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+#       state: present
+#       backup: yes
+#     register: etchostsupdate
+#     when: ansible_hostname != "{{ item }}" or ansible_hostname == "{{ item }}"
+#     with_items: "{{groups['multi']}}"
+
+  - name: Update the /etc/hosts file with node name
+    blockinfile:
+     path: /etc/hosts
+     block: |
+      192.168.122.10 k8s-master.local.com
+      192.168.122.11 k8s-slave1.local.com
+      192.168.122.12 k8s-slave2.local.com

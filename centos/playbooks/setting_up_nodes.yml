@@ -1,0 +1,89 @@
+---
+- hosts: all
+  become: true
+  gather_facts: No
+  vars_files:
+  - ../env_variables
+
+  tasks:
+  - name: Disabling Swap on all nodes
+    shell: swapoff -a
+
+  - name: Commenting Swap entries in /etc/fstab
+    replace:
+     path: /etc/fstab
+     regexp: '(.*swap*)'
+     replace: '#\1'
+
+  - name: Creating a repository file for Kubernetes
+    file:
+     path: /etc/yum.repos.d/kubernetes.repo
+     state: touch
+
+  - name: Adding repository details in Kubernetes repo file.
+    blockinfile:
+     path: /etc/yum.repos.d/kubernetes.repo
+     block: |
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      enabled=1
+      gpgcheck=0
+      repo_gpgcheck=0
+      gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+  - name: Installing Docker Prerequesits
+    yum:
+     name: "{{ utils }}"
+     state: latest
+
+  - name: Install a list of packages
+    yum:
+     name: "{{ packages }}"
+     state: latest
+
+
+#  - name: Starting and Enabling the required services
+#    service:
+#     name: "{{ services }}"
+#     state: started
+#     enabled: yes
+
+  - name: Start service docker, if not running
+    service:
+     name: docker
+     state: started
+     enabled: yes
+
+  - name: Start service kubelet, if not running
+    service:
+     name: kubelet
+     state: started
+     enabled: yes
+
+  - name: Start firewalld, if not running
+    service:
+     name: firewalld
+     state: started
+     enabled: yes
+
+  - name: Allow Network ports in Firewalld
+    firewalld:
+     port: 6443/tcp
+     permanent: true
+     state: disabled
+
+  - firewalld:
+     port: 10250/tcp
+     permanent: true
+     state: disabled
+
+#  - name: Allow Network Ports in Firewalld
+#    firewalld:
+#     port: "{{ ports }}"
+#     state: enabled
+#     permanent: yes
+#     immediate: yes
+
+  - name: Enabling Bridge Firewall Rule
+    shell: "echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables"

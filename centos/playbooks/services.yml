@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  gather_facts: No
+
+  tasks:
+  - name: Start service docker, if not running
+    service:
+     name: docker
+     state: started
+     enabled: yes
+
+  - name: Start service kubelet, if not running
+    service:
+     name: kubelet
+     state: started
+     enabled: yes
+
+  - name: Stop service firewalld, if not running
+    service:
+     name: firewalld
+     state: stopped
+     enabled: yes

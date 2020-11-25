@@ -1,0 +1,6 @@
+[kubernetes-master-nodes]
+192.168.122.10  ansible_connection=ssh  ansible_user=admin
+
+[kubernetes-worker-nodes]
+192.168.122.11  ansible_connection=ssh  ansible_user=admin
+192.168.122.12  ansible_connection=ssh  ansible_user=admin

@@ -13,13 +13,13 @@ How to use this (Setup Instructions):
 official yum repository.
 
 5. Clone this repository into your master node.
-   '''
+   ``` 
    git clone 
    
    once it is cloned, get into the directory
    
    cd kubernetes-and-ansible/centos
-'''
+   ``` 
 
 6. There is a file "hosts" available in "centos" directory, Just make your entries of your all kubernetes nodes. 
 
